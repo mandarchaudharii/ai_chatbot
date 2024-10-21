@@ -1,14 +1,20 @@
 import streamlit as st
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 import torch
 from streamlit_chat import message
 
-# Load model and tokenizer from Hugging Face
-model_name = "mandarchaudharii/gfairep"  # Update with your model's path
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-model = GPT2LMHeadModel.from_pretrained(model_name)
+# Specify the path to your local model directory
+model_path = "mandarchaudharii/gfairep"  # Update this path
 
-# Ensure the model is in evaluation mode
+# Load model configuration and set pad_token_id
+config = GPT2Config.from_pretrained(model_path)
+config.pad_token_id = 50256  # Set the pad token ID
+
+# Load model and tokenizer
+tokenizer = GPT2Tokenizer.from_pretrained(model_path)
+tokenizer.pad_token_id = 50256  # Ensure tokenizer knows the pad token
+
+model = GPT2LMHeadModel.from_pretrained(model_path, config=config)
 model.eval()
 
 # Function to generate responses
@@ -16,7 +22,8 @@ def chat_with_bot(user_input):
     input_text = f"He: {user_input} She:"
     inputs = tokenizer.encode(input_text, return_tensors="pt")
 
-    outputs = model.generate(inputs, max_length=150, num_return_sequences=1)
+    with torch.no_grad():
+        outputs = model.generate(inputs, max_length=150, num_return_sequences=1, pad_token_id=50256)  # Set pad_token_id here
     
     bot_response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return bot_response.split("She:")[-1].strip()
