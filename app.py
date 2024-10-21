@@ -16,8 +16,7 @@ def chat_with_bot(user_input):
     input_text = f"He: {user_input} She:"
     inputs = tokenizer.encode(input_text, return_tensors="pt")
 
-    with torch.no_grad():
-        outputs = model.generate(inputs, max_length=150, num_return_sequences=1)
+    outputs = model.generate(inputs, max_length=150, num_return_sequences=1)
     
     bot_response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return bot_response.split("She:")[-1].strip()
