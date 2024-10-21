@@ -34,9 +34,6 @@ if 'message_history' not in st.session_state:
 for msg in st.session_state.message_history:
     message(msg['text'], is_user=msg['is_user'])
 
-# Placeholder for the latest message
-placeholder = st.empty()
-
 # User input
 user_input = st.chat_input("You:")
 
@@ -44,10 +41,12 @@ if user_input:
     # Append user message to history
     st.session_state.message_history.append({"text": user_input, "is_user": True})
     
+    # Display user message immediately
+    message(user_input, is_user=True)
+
     # Generate bot response
     bot_response = chat_with_bot(user_input)
     st.session_state.message_history.append({"text": bot_response, "is_user": False})
     
-    # Display the latest message
-    with placeholder.container():
-        message(st.session_state.message_history[-1]['text'], is_user=st.session_state.message_history[-1]['is_user'])
+    # Display bot response
+    message(bot_response, is_user=False)
