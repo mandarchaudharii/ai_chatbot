@@ -10,11 +10,10 @@ model_path = "mandarchaudharii/gfairep"  # Update this path
 config = GPT2Config.from_pretrained(model_path)
 # Set the pad token ID
 
-tokenizer.pad_token = tokenizer.eos_token
-
 # Load model and tokenizer
 tokenizer = GPT2Tokenizer.from_pretrained(model_path)
  # Ensure tokenizer knows the pad token
+tokenizer.pad_token = tokenizer.eos_token
 
 model = GPT2LMHeadModel.from_pretrained(model_path, config=config)
 model.eval()
