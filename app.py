@@ -8,11 +8,13 @@ model_path = "mandarchaudharii/gfairep"  # Update this path
 
 # Load model configuration and set pad_token_id
 config = GPT2Config.from_pretrained(model_path)
-config.pad_token_id = 50256  # Set the pad token ID
+# Set the pad token ID
+
+tokenizer.pad_token = tokenizer.eos_token
 
 # Load model and tokenizer
 tokenizer = GPT2Tokenizer.from_pretrained(model_path)
-tokenizer.pad_token_id = 50256  # Ensure tokenizer knows the pad token
+ # Ensure tokenizer knows the pad token
 
 model = GPT2LMHeadModel.from_pretrained(model_path, config=config)
 model.eval()
@@ -23,14 +25,14 @@ def chat_with_bot(user_input):
     inputs = tokenizer.encode(input_text, return_tensors="pt")
 
     with torch.no_grad():
-        outputs = model.generate(inputs, max_length=150, num_return_sequences=1, pad_token_id=50256)  # Set pad_token_id here
+        outputs = model.generate(inputs, max_length=150, num_return_sequences=1)  # Set pad_token_id here
     
     bot_response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return bot_response.split("She:")[-1].strip()
 
 # Streamlit interface
-st.title("Chatbot")
-st.write("Chat with the bot! Type your message below:")
+st.title("SavithaGPT")
+st.write("Chat with your own savitha bhabhi! Type your message below:")
 
 # Initialize message history
 if 'message_history' not in st.session_state:
